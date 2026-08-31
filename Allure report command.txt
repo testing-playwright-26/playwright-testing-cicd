@@ -1,0 +1,11 @@
+
+C:\Users\admin\eclipse-workspace\Playwirghtdemo>allure generate allure-results --clean
+Report successfully generated to allure-report
+C:\Users\admin\eclipse-workspace\Playwirghtdemo>allure serve allure-results
+Generating report to temp directory...
+
+allure generate allure-results --clean -o allure-report
+
+
+allure generate --clean 
+allure serve allure-results

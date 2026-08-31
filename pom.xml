@@ -1,0 +1,122 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>Ecommerce</groupId>
+  <artifactId>Playwirghtdemo</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <properties>
+    <allure.version>2.35.3</allure.version>
+    
+   </properties>
+  <dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-bom</artifactId>
+            <version>${allure.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+  <dependencies>
+        <!-- Paste the Playwright dependency inside here -->
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <version>1.49.0</version>
+        </dependency>
+        <!-- JUnit 5 how to run tests or decide if a test passed or failed-->
+        <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.10.0</version>
+        <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.10.0</version>
+        <scope>test</scope>
+    </dependency>
+    
+   <dependency>
+    <groupId>io.qameta.allure</groupId>
+    <artifactId>allure-jupiter</artifactId>
+    <scope>test</scope>
+</dependency>
+    </dependencies>
+    <!-- Captures logs & generates reports in /target/surefire-reports-->
+    
+    <build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.1.2</version>
+            
+            <configuration>
+                <!-- Custom include patterns if your test classes don't end in *Test.java -->
+                <includes>
+                    <include>**/*Test.java</include>
+                    <include>**/*Tests.java</include>
+                    <include>**/*TestCase.java</include>
+                </includes>
+
+                <!-- Environment variables for Playwright reports (if needed) -->
+                <environmentVariables>
+                    <PLAYWRIGHT_HTML_REPORT>target/playwright-report</PLAYWRIGHT_HTML_REPORT>
+                </environmentVariables>
+            </configuration>
+            
+        </plugin>
+        
+        <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.11.0</version>
+    <configuration>
+        <release>21</release>
+        <fork>true</fork>
+        <!-- Tells Maven where to find the JDK javac compiler -->
+        <executable>${env.JAVA_HOME}/bin/javac</executable>
+    </configuration>
+</plugin>
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <version>3.1.2</version>
+        </plugin>
+        
+        <!-- Allure Maven Plugin (Allows 'mvn allure:serve' and 'mvn allure:report') -->
+        <plugin>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-maven</artifactId>
+            <version>2.12.0</version>
+            <configuration>
+                <reportVersion>2.35.3</reportVersion>
+                <resultsDirectory>${project.basedir}/allure-results</resultsDirectory>
+            </configuration>
+            <executions>
+        <execution>
+            <id>allure-report</id>
+            <phase>test</phase>
+            <goals>
+                <goal>report</goal>
+            </goals>
+        </execution>
+    </executions>
+    
+        </plugin>
+
+        <!-- Maven Site Plugin -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.12.1</version>
+        </plugin>
+    </plugins>
+</build>
+    
+</project>

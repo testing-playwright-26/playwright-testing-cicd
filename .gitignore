@@ -1,0 +1,16 @@
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Allure generated files
+.allure/
+allure-report/
+allure-results/
+
+# Test artifacts
+screenshots/
+videos/
+
+# Maven
+target/
