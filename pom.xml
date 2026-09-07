@@ -111,7 +111,8 @@
                 <reportVersion>2.35.3</reportVersion>
                 <resultsDirectory>${project.basedir}/allure-results</resultsDirectory>
             </configuration>
-            <executions>
+         <!--
+         <executions>
         <execution>
             <id>allure-report</id>
             <phase>test</phase>
@@ -120,7 +121,7 @@
             </goals>
         </execution>
     </executions>
-    
+    -->
         </plugin>
 
         <!-- Maven Site Plugin -->
