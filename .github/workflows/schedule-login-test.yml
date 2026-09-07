@@ -1,0 +1,30 @@
+name: Schedule Login Test
+
+# This schedules the test ex: 13:30 UTC + 5 hours 30 minutes = 7:00 PM IST
+on:
+  schedule:
+    - cron: '30 13 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-login-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: mvn clean install -DskipTests
+
+      - name: Install Playwright browsers
+        run: mvn exec:java -e -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install --with-deps"
+
+      - name: Run LoginTest
+        run: mvn test -Dtest=LoginTest
