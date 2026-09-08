@@ -1,11 +1,12 @@
-name: Schedule Login Test
+name: Schedule Login Test with Allure Report
 
-# Runs every day at 11:00 PM IST
-# 17:30 UTC + 5 hours 30 minutes = 11:00 PM IST
+# Runs every day at 11:30 AM IST
+# 11:30 AM IST - 5 hours 30 minutes= 6:00 AM UTC
+
 
 on:
   schedule:
-    - cron: '30 17 * * *'
+    - cron: '0 6 * * *'
   workflow_dispatch:
 
 jobs:
@@ -24,6 +25,19 @@ jobs:
 
       - name: Install Playwright browsers
         run: mvn exec:java -e -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install --with-deps"
-
+      
+      - name: Clean Allure Results
+        run: rm -rf allure-results
+        
       - name: Run LoginTest
         run: mvn test -Dtest=LoginTest
+      - name: Generate Allure Report
+        run: mvn allure:report
+
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: target/site/allure-maven-plugin
+
+        
