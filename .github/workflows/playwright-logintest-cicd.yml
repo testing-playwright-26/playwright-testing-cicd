@@ -1,13 +1,17 @@
 name: Schedule Login Test with Allure Report
 
-# Runs every day at 11:30 AM IST
-# 11:30 AM IST - 5 hours 30 minutes= 6:00 AM UTC
-
+# Runs every day at 3:00 PM IST
+# 3:00 PM IST - 5 hours 30 minutes = 9:30 AM UTC
 
 on:
   schedule:
-    - cron: '0 6 * * *'
+    - cron: '30 9 * * *'
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   run-login-test:
@@ -25,12 +29,13 @@ jobs:
 
       - name: Install Playwright browsers
         run: mvn exec:java -e -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install --with-deps"
-      
+
       - name: Clean Allure Results
         run: rm -rf allure-results
-        
+
       - name: Run LoginTest
         run: mvn test -Dtest=LoginTest
+
       - name: Generate Allure Report
         run: mvn allure:report
 
@@ -40,4 +45,23 @@ jobs:
           name: allure-report
           path: target/site/allure-maven-plugin
 
-        
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Allure Report to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: target/site/allure-maven-plugin
+
+  deploy:
+    needs: run-login-test
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
