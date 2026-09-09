@@ -21,12 +21,22 @@ jobs:
 
       - name: Get previous Allure history
         run: |
+          echo "Checking previous Allure report structure..."
+
           git fetch origin gh-pages || true
+
+          git ls-tree -r origin/gh-pages --name-only | grep "login-test/history" || true
+
           git checkout origin/gh-pages -- login-test/history || true
 
           if [ -d "login-test/history" ]; then
+            echo "Previous history found!"
             mkdir -p allure-history
             cp -r login-test/history/* allure-history/
+            echo "History files copied:"
+            ls -la allure-history
+          else
+            echo "No previous history found."
           fi
 
       - name: Set up Java
@@ -49,6 +59,10 @@ jobs:
           if [ -d "allure-history" ]; then
             mkdir -p allure-results/history
             cp -r allure-history/* allure-results/history/
+            echo "History copied to allure-results/history:"
+            ls -la allure-results/history
+          else
+            echo "No history available to copy."
           fi
 
       - name: Generate Allure Report
