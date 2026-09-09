@@ -1,7 +1,7 @@
 name: Schedule Login Test with Allure Report
 
 # Runs every day at 3:00 PM IST
-# 3:00 PM IST - 5 hours 30 minutes = 9:30 AM UTC
+# 3:00 PM IST = 9:30 AM UTC
 
 on:
   schedule:
@@ -9,9 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 jobs:
   run-login-test:
@@ -39,29 +37,12 @@ jobs:
       - name: Generate Allure Report
         run: mvn allure:report
 
-      - name: Upload Allure Report
-        uses: actions/upload-artifact@v4
+      - name: Deploy LoginTest Allure Report
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          name: allure-report
-          path: target/site/allure-maven-plugin
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Allure Report to GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: target/site/allure-maven-plugin
-
-  deploy:
-    needs: run-login-test
-    runs-on: ubuntu-latest
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: target/site/allure-maven-plugin
+          destination_dir: login-test
+          keep_files: true
+          full_commit_message: "Update LoginTest workflow for separate Allure report"
