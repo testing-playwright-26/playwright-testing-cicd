@@ -19,6 +19,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Get previous Allure history
+        run: |
+          echo "Checking previous Allure report structure..."
+
+          git fetch origin gh-pages || true
+
+          git ls-tree -r origin/gh-pages --name-only | grep "script-practice/history" || true
+
+          git checkout origin/gh-pages -- script-practice/history || true
+
+          if [ -d "script-practice/history" ]; then
+            echo "Previous history found!"
+            mkdir -p allure-history
+            cp -r script-practice/history/* allure-history/
+            echo "History files copied:"
+            ls -la allure-history
+          else
+            echo "No previous history found."
+          fi
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -35,6 +55,17 @@ jobs:
         run: mvn test -Dtest=PlaywrightScriptPractice.**
         continue-on-error: true
 
+      - name: Copy previous Allure history
+        run: |
+          if [ -d "allure-history" ]; then
+            mkdir -p allure-results/history
+            cp -r allure-history/* allure-results/history/
+            echo "History copied to allure-results/history:"
+            ls -la allure-results/history
+          else
+            echo "No history available to copy."
+          fi
+
       - name: Generate Allure Report
         run: mvn allure:report
 
@@ -46,4 +77,4 @@ jobs:
           publish_dir: target/site/allure-maven-plugin
           destination_dir: script-practice
           keep_files: true
-          full_commit_message: "Update PlaywrightScriptPractice Allure Report"
+          full_commit_message: "Update PlaywrightScriptPractice Allure Report with history"
