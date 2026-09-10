@@ -29,6 +29,8 @@ import com.microsoft.playwright.options.BoundingBox;
 import com.microsoft.playwright.options.MouseButton;
 
 import io.qameta.allure.Allure;
+//import java.net.URISyntaxException;
+
 @ExtendWith(TestListener.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Uploadfile_Locators_Test extends BaseTest{
@@ -37,11 +39,24 @@ public class Uploadfile_Locators_Test extends BaseTest{
     
 	@Test
 	//@Order(3)
-    void Locators_Uploadfile() {
+    void Locators_Uploadfile()throws Exception{
 		
 		//getByAltText.evaluate("el => el.scrollIntoView({ behavior: 'smooth', block: 'center' })");
         //page.evaluate("window.scrollTo(0, 500)");
         //imptxt.evaluate("el => el.style.backgroundColor = 'yellow'");
+		
+		 Path audioFile = Paths.get(
+			        getClass().getClassLoader()
+			            .getResource("TestData/audio_only.m4a")
+			            .toURI()
+			    );
+
+			    Path imageFile = Paths.get(
+			        getClass().getClassLoader()
+			            .getResource("TestData/analytical thinking.jpg")
+			            .toURI()
+			    );
+
     	
 		System.out.println("---Locators Testing---");
     	
@@ -73,7 +88,7 @@ public class Uploadfile_Locators_Test extends BaseTest{
         
         // C:\\TestData\\sample.txt or C:/TestData/sample.txt
         
-        singlefile.setInputFiles(Paths.get("C:\\TestData\\audio_only.m4a")); //upload single file
+        singlefile.setInputFiles(audioFile); //upload single file
         singlefile.evaluate("el => el.scrollIntoView({ behavior: 'smooth', block: 'center' })");
         
         //assertThat(singlefile).hasValue("C:\\TestData\\audio_only.m4a");
@@ -87,8 +102,8 @@ public class Uploadfile_Locators_Test extends BaseTest{
         Locator multiplefile=page.locator("input#multipleFilesInput");
         
         multiplefile.setInputFiles(new Path[] {
-        	    Paths.get("C:\\TestData\\audio_only.m4a"),
-        	    Paths.get("C:\\TestData\\analytical thinking.jpg")
+        		audioFile,
+        	    imageFile
         	});
         multiplefile.evaluate("el => el.scrollIntoView({ behavior: 'smooth', block: 'center' })");
         
